@@ -164,13 +164,178 @@ preview_image_by_class(db_config, class_name='0')
 
 ## **6. Future Applications**
 
-This application can be extended to include:
-- **Data Filtering**: Retrieve specific subsets of images based on resolution, bounding box count, etc.
-- **Data Augmentations**: Generate augmented data for improving model robustness.
-- **Multi-Format Export**: Convert the dataset to COCO, Pascal VOC, or CSV formats.
-- **Annotation Validation**: Detect and report issues in labels.
-- **Streamlit UI**: A visual playground to browse, filter, and download the dataset.
-- **Usage Monitoring**: Track download counts and popular classes for analysis.
+In addition to the current features, we envision expanding the application with the following functionalities. These additions will make the Cyclist Detection Playground even more versatile and powerful for data scientists, ML engineers, and developers.
+
+---
+
+### **1. On-the-Fly Data Augmentations**
+
+Provide developers with augmented data to test model robustness and improve generalization during training.
+
+- **Supported Augmentations**: Flipping, Rotation, Cropping, Color Adjustments, and more.
+- Save augmented images alongside the original data into structured folders.
+
+**Example Use Case**: A developer can request augmented data during fetching.
+
+```python
+fetch_and_download_data(num_images=500, augment=True, augment_types=["flip", "rotate"])
+```
+
+**Output**: Augmented data is saved into structured folders:
+```
+output_data/
+├── train/
+│   ├── images/
+│   ├── labels/
+├── train_aug/
+│   ├── images/
+│   ├── labels/
+```
+
+---
+
+### **2. Versioning and Dataset Snapshots**
+
+Allow users to **version datasets** or take snapshots of their data during experiments.
+
+- Store metadata such as applied filters and splits (e.g., "500 images, class=0 only").
+- Maintain a **dataset history log** for reproducibility.
+
+**Example**:
+
+```python
+create_dataset_version("v1.0", filters={"classes": ["0"], "image_count": 500})
+```
+
+**Output**:
+- Metadata and filters are stored in the database.
+- Users can download specific versions of the dataset.
+
+---
+
+### **3. Annotation Validation Tools**
+
+Provide built-in tools to **validate YOLO annotations** for quality control.
+
+- **Features**:
+  - Check for invalid bounding boxes (e.g., coordinates exceeding image bounds).
+  - Detect zero-sized bounding boxes.
+  - Highlight overlapping or redundant bounding boxes.
+- Generate a **validation report**.
+
+**Example**:
+
+```python
+validate_annotations()
+```
+
+**Output**:
+```yaml
+Invalid Bounding Boxes:
+  - image_0005.txt: x_max > image width
+
+Zero-Sized Boxes:
+  - image_0012.txt: width = 0
+```
+
+---
+
+### **4. Real-Time Data Exploration with Streamlit**
+
+Build a **Streamlit-based UI** to enable real-time data exploration and visualization.
+
+- Browse images with bounding boxes interactively.
+- Apply filters (e.g., filter by class, resolution, or dataset splits).
+- Download filtered data directly from the UI.
+
+**Benefits**:
+- A visual playground for non-technical team members.
+- Easy interaction without modifying code.
+
+---
+
+### **5. Monitoring Data Usage**
+
+Track and analyze how developers are interacting with the database.
+
+- **Log Statistics**:
+  - Most downloaded classes.
+  - Popular data splits (train/val/test ratios).
+- Use these insights to identify underrepresented classes or trends.
+
+**Example Query**:
+
+```sql
+SELECT COUNT(*) AS download_count, class_name
+FROM annotations
+GROUP BY class_name;
+```
+
+**Use Case**:  
+If "class 0" (cyclist) is downloaded most often, we can prioritize adding data for underrepresented classes.
+
+---
+
+### **6. Integration with Model Training Pipelines**
+
+Streamline the workflow by preparing data for popular training frameworks.
+
+- Automatically generate preformatted **train/val/test splits** for YOLO, TensorFlow, and PyTorch.
+- Create **data configuration files** needed for training.
+
+**Example for YOLO**:
+
+**Generated Config**:
+```yaml
+train: /path/to/train/images
+val: /path/to/val/images
+test: /path/to/test/images
+nc: 1
+names: ['cyclist']
+```
+
+**Feature**:
+
+```python
+generate_training_config(format="yolo")
+```
+
+---
+
+### **7. Export Data in Multiple Formats**
+
+Support exporting data in different annotation formats for compatibility across frameworks.
+
+- **Supported Formats**:
+  - YOLO: Default format.
+  - Pascal VOC (XML).
+  - COCO JSON.
+  - CSV.
+
+**Example**:
+
+```python
+fetch_and_download_data(output_format="coco")
+```
+
+**Benefit**: Developers can seamlessly switch between frameworks like YOLO, Faster R-CNN, or SSD without reformatting their annotations.
+
+---
+
+### **Why These Features?**
+
+The proposed features aim to:
+- **Improve Usability**: Simplify interactions with the database and data.
+- **Enhance Flexibility**: Support multiple ML frameworks, formats, and use cases.
+- **Optimize Workflow**: Reduce manual overhead for dataset preparation and validation.
+- **Ensure Data Quality**: Provide tools for validation and augmentation.
+
+---
+
+By implementing these features, the Cyclist Detection Playground will become a complete, end-to-end solution for managing, preparing, and deploying cyclist detection datasets.
+
+Contributions and suggestions for these future features are welcome! 🚀
+
 
 ---
 
