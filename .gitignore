@@ -1,0 +1,21 @@
+# Ignore all .log files
+*.log
+
+# Ignore the `node_modules` folder
+final_database/
+
+# Ignore all files in a `temp` folder
+temp/
+
+# Ignore a specific file
+secret-config.json
+
+# Ignore all `.txt` files except `important.txt`
+*.txt
+!important.txt
+
+# Ignore the `.env` file
+.env
+
+# Ignore all folders starting with "build"
+build*/
