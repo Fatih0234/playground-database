@@ -4,6 +4,8 @@ import psycopg2
 import shutil
 from PIL import Image, ImageDraw
 
+# TODO: Annotations also need to be fetched with images, has to be done
+
 def fetch_and_download_data(db_config, output_folder, num_images, split_data=True, 
                             train_ratio=0.8, val_ratio=0.1, test_ratio=0.1, filter_classes=None):
     """
